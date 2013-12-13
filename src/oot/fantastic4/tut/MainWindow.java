@@ -40,8 +40,14 @@ public class MainWindow {
         JButton freiburgButton = new JButton("Freiburg");
         JButton baselButton = new JButton("Basel");
         JButton zürichButton = new JButton("Zürich");
+        JButton stuttgartButton = new JButton("Stuttgart");
 
-        positionCity(mannheimButton, 10, 10);
+        positionCity(mannheimButton, 4, 1);
+        positionCity(carlsruheButton, 3, 10);
+        positionCity(freiburgButton, 2, 17);
+        positionCity(baselButton, 1, 20);
+        positionCity(zürichButton, 5, 22);
+        positionCity(stuttgartButton, 9, 8);
 
     }
 
@@ -51,8 +57,8 @@ public class MainWindow {
         //Insets insets = mapPanel.getInsets();
         Dimension size = button.getPreferredSize();
 
-        x = map(x, 0, 100, 0, 800);
-        y = map(y, 0, 100, 0, 600);
+        x = map(x, 0, 50, 0, 800);
+        y = map(y, 0, 25, 0, 600);
 
         button.setBounds(x, y, size.width, size.height);
     }
