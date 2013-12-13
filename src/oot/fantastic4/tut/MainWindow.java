@@ -1,7 +1,10 @@
 package oot.fantastic4.tut;
 
+import oot.fantastic4.tut.swing.ImagePanel;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * Created by kaeltis on 13.12.13.
@@ -26,13 +29,18 @@ public class MainWindow {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Thurn und Taxis");
         frame.setContentPane(new MainWindow().mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
     }
 
     private void createUIComponents() {
-        mapPanel = new JPanel();
+        try {
+            mapPanel = new ImagePanel("E:/thurnplan.jpg");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
         mapPanel.setLayout(null);
 
         JButton mannheimButton = new JButton("Mannheim");
@@ -42,12 +50,12 @@ public class MainWindow {
         JButton zürichButton = new JButton("Zürich");
         JButton stuttgartButton = new JButton("Stuttgart");
 
-        positionCity(mannheimButton, 4, 1);
+        positionCity(mannheimButton, 7, 8);
         positionCity(carlsruheButton, 3, 10);
         positionCity(freiburgButton, 2, 17);
         positionCity(baselButton, 1, 20);
         positionCity(zürichButton, 5, 22);
-        positionCity(stuttgartButton, 9, 8);
+        positionCity(stuttgartButton, 11, 17);
 
     }
 
@@ -57,8 +65,8 @@ public class MainWindow {
         //Insets insets = mapPanel.getInsets();
         Dimension size = button.getPreferredSize();
 
-        x = map(x, 0, 50, 0, 800);
-        y = map(y, 0, 25, 0, 600);
+        x = map(x, 0, 50, 0, 630);
+        y = map(y, 0, 50, 0, 460);
 
         button.setBounds(x, y, size.width, size.height);
     }
@@ -66,4 +74,5 @@ public class MainWindow {
     private int map(int x, int in_min, int in_max, int out_min, int out_max) {
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
+
 }
