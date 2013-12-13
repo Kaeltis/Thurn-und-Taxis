@@ -1,6 +1,7 @@
 package oot.fantastic4.tut;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by kaeltis on 13.12.13.
@@ -20,7 +21,6 @@ public class MainWindow {
     private JButton amtmannButton;
     private JButton postmeisterButton;
     private JButton postillionButton;
-    private JButton handkarte1Button;
     private JPanel handKartenPanel;
 
     public static void main(String[] args) {
@@ -31,5 +31,33 @@ public class MainWindow {
         frame.setVisible(true);
     }
 
+    private void createUIComponents() {
+        mapPanel = new JPanel();
+        mapPanel.setLayout(null);
 
+        JButton mannheimButton = new JButton("Mannheim");
+        JButton carlsruheButton = new JButton("Carlsruhe");
+        JButton freiburgButton = new JButton("Freiburg");
+        JButton baselButton = new JButton("Basel");
+        JButton zürichButton = new JButton("Zürich");
+
+        positionCity(mannheimButton, 10, 10);
+
+    }
+
+    private void positionCity(JButton button, int x, int y) {
+        mapPanel.add(button);
+
+        //Insets insets = mapPanel.getInsets();
+        Dimension size = button.getPreferredSize();
+
+        x = map(x, 0, 100, 0, 800);
+        y = map(y, 0, 100, 0, 600);
+
+        button.setBounds(x, y, size.width, size.height);
+    }
+
+    private int map(int x, int in_min, int in_max, int out_min, int out_max) {
+        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
 }
