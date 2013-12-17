@@ -10,6 +10,8 @@ import java.util.List;
 public class Spieler {
     private String name;
     private Game currentGame;
+    private Bonus bonus = new Bonus();
+    private int häuser = 20;
     private List<Stadt> hand = new LinkedList<Stadt>();
 
     public Spieler(String name, Game currentGame) {
@@ -51,5 +53,13 @@ public class Spieler {
 
     public void usePostmaster() {
 
+    }
+
+    public Bonus getBonus() {
+        return bonus;
+    }
+
+    public String getName() {
+        return name;
     }
 }

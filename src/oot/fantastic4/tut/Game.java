@@ -9,6 +9,18 @@ import java.util.List;
  */
 public class Game {
     private List<Spieler> mitspieler = new LinkedList<Spieler>();
+    private Stapel kartenStapel = new Stapel();
+    private Karte[] offeneKarten = new Karte[6];
+    private int bonusEnde;
+    private int bonus5er;
+    private int bonus6er;
+    private int bonus7er;
+    private int bonusAlleLänder;
+    private int bonusBaden;
+    private int bonusSchweizTyrol;
+    private int bonusWürttembergHohenzollern;
+    private int bonusBöhmenSalzburg;
+    private int bonusBaiern;
 
     public Game(Spieler spieler, Spieler... weitereSpieler) {
         mitspieler.add(spieler);
