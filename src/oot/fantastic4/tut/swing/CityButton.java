@@ -26,6 +26,7 @@ public class CityButton extends JButton {
         y = map(y, 0, 50, 0, 460);
 
         this.setBounds(x, y, size.width, size.height);
+        this.setForeground(this.stadt.getLand().getFarbe());
         //this.setOpaque(false);
         //this.setContentAreaFilled(false);
         //this.setBorderPainted(false);
