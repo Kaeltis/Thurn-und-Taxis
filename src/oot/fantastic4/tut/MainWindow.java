@@ -1,9 +1,9 @@
 package oot.fantastic4.tut;
 
+import oot.fantastic4.tut.swing.CityButton;
 import oot.fantastic4.tut.swing.ImagePanel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -32,47 +32,40 @@ public class MainWindow {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
 
     private void createUIComponents() {
         try {
-            mapPanel = new ImagePanel("E:/thurnplan.jpg");
+            mapPanel = new ImagePanel("src/oot/fantastic4/tut/resources/thurnplan.jpg");
         } catch (IOException ex) {
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Maphintergrund nicht gefunden!", "Fehler", JOptionPane.CANCEL_OPTION);
         }
 
         mapPanel.setLayout(null);
 
-        JButton mannheimButton = new JButton("Mannheim");
-        JButton carlsruheButton = new JButton("Carlsruhe");
-        JButton freiburgButton = new JButton("Freiburg");
-        JButton baselButton = new JButton("Basel");
-        JButton zürichButton = new JButton("Zürich");
-        JButton stuttgartButton = new JButton("Stuttgart");
-
-        positionCity(mannheimButton, 7, 8);
-        positionCity(carlsruheButton, 3, 10);
-        positionCity(freiburgButton, 2, 17);
-        positionCity(baselButton, 1, 20);
-        positionCity(zürichButton, 5, 22);
-        positionCity(stuttgartButton, 11, 17);
-
-    }
-
-    private void positionCity(JButton button, int x, int y) {
-        mapPanel.add(button);
-
-        //Insets insets = mapPanel.getInsets();
-        Dimension size = button.getPreferredSize();
-
-        x = map(x, 0, 50, 0, 630);
-        y = map(y, 0, 50, 0, 460);
-
-        button.setBounds(x, y, size.width, size.height);
-    }
-
-    private int map(int x, int in_min, int in_max, int out_min, int out_max) {
-        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+        JButton mannheimButton = new CityButton(Stadt.MANNHEIM, 7, 8, mapPanel);
+        JButton carlsruheButton = new CityButton(Stadt.CARLSRUHE, 2, 21, mapPanel);
+        JButton freiburgButton = new CityButton(Stadt.FREIBURG, 1, 35, mapPanel);
+        JButton baselButton = new CityButton(Stadt.BASEL, 1, 44, mapPanel);
+        JButton zuerichButton = new CityButton(Stadt.ZÜRICH, 6, 47, mapPanel);
+        JButton stuttgartButton = new CityButton(Stadt.STUTTGART, 11, 17, mapPanel);
+        JButton sigmaringenButton = new CityButton(Stadt.SIGMARINGEN, 6, 30, mapPanel);
+        JButton ulmButton = new CityButton(Stadt.ULM, 14, 28, mapPanel);
+        JButton wuerzburgButton = new CityButton(Stadt.WÜRZBURG, 17, 5, mapPanel);
+        JButton nuernbergButton = new CityButton(Stadt.NÜRNBERG, 24, 12, mapPanel);
+        JButton ingolstadtButon = new CityButton(Stadt.INGOLSTADT, 23, 23, mapPanel);
+        JButton augsburgButton = new CityButton(Stadt.AUGSBURG, 20, 31, mapPanel);
+        JButton kemptenButton = new CityButton(Stadt.KEMPTEN, 16, 41, mapPanel);
+        JButton innsbruckButton = new CityButton(Stadt.INNSBRUCK, 21, 47, mapPanel);
+        JButton pilsenButton = new CityButton(Stadt.PILSEN, 34, 6, mapPanel);
+        JButton regensburgButton = new CityButton(Stadt.REGENSBURG, 31, 19, mapPanel);
+        JButton muenchenButton = new CityButton(Stadt.MÜNCHEN, 28, 36, mapPanel);
+        JButton passauButton = new CityButton(Stadt.PASSAU, 37, 32, mapPanel);
+        JButton lodzButton = new CityButton(Stadt.LODZ, 44, 5, mapPanel);
+        JButton budweisButton = new CityButton(Stadt.BUDWEIS, 43, 18, mapPanel);
+        JButton linzButton = new CityButton(Stadt.LINZ, 44, 32, mapPanel);
+        JButton salzburgButton = new CityButton(Stadt.SALZBURG, 41, 46, mapPanel);
     }
 
 }

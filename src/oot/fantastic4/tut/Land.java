@@ -11,5 +11,6 @@ public enum Land {
     HOHENZOLLERN,
     BÖHMEN,
     SALZBURG,
+    POLEN,
     BAIERN;
 }
