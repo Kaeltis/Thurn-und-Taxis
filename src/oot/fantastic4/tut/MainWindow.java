@@ -27,6 +27,18 @@ public class MainWindow {
     private JPanel handKartenPanel;
 
     public static void main(String[] args) {
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    System.out.println(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Java Nimbus LookAndFeel nicht gefunden!", "Fehler", JOptionPane.CANCEL_OPTION);
+        }
+
         JFrame frame = new JFrame("Thurn und Taxis");
         frame.setContentPane(new MainWindow().mainPanel);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
