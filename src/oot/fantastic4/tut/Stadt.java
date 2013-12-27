@@ -24,7 +24,8 @@ public enum Stadt {
     NÜRNBERG(Land.BAIERN),
     PASSAU(Land.BAIERN),
     REGENSBURG(Land.BAIERN),
-    WÜRZBURG(Land.BAIERN);
+    WÜRZBURG(Land.BAIERN),
+    LODZ(Land.POLEN);
 
     private Land land;
 
