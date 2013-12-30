@@ -11,7 +11,7 @@ public class Spieler {
     private String name;
     private Game currentGame;
     private Bonus bonus = new Bonus();
-    private int häuser = 20;
+    private int haeuser = 20;
     private List<Stadt> hand = new LinkedList<Stadt>();
 
     public Spieler(String name, Game currentGame) {
@@ -55,11 +55,15 @@ public class Spieler {
 
     }
 
-    public Bonus getBonus() {
-        return bonus;
+    public int getBonus() {
+        return bonus.getValue();
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getPoints() {
+        return getBonus() - haeuser;
     }
 }

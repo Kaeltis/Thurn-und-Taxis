@@ -38,7 +38,7 @@ public class Bonus {
         this.extraBonus = extraBonus;
     }
 
-    public int getBonus() {
+    public int getValue() {
         return streckenBonus + laenderBonus + extraBonus;
     }
 }
