@@ -31,6 +31,12 @@ public class CityButton extends JButton {
         //this.setOpaque(false);
         //this.setContentAreaFilled(false);
         //this.setBorderPainted(false);
+
+        this.addActionListener(new MapClickHandler());
+    }
+
+    public Stadt getStadt() {
+        return stadt;
     }
 
     private int map(int x, int in_min, int in_max, int out_min, int out_max) {

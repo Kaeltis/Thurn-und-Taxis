@@ -1,6 +1,5 @@
 package oot.fantastic4.tut;
 
-import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,10 +12,11 @@ public class Spieler {
     private Bonus bonus = new Bonus();
     private int haeuser = 20;
     private List<Stadt> hand = new LinkedList<Stadt>();
+    private List<Stadt> route = new LinkedList<Stadt>();
 
-    public Spieler(String name, Game currentGame) {
+    public Spieler(String name) {
         this.name = name;
-        this.currentGame = currentGame;
+        this.currentGame = Game.getInstance();
     }
 
     public void finishRoute() {
@@ -32,7 +32,7 @@ public class Spieler {
     }
 
     public void drawCard() {
-
+        hand.add(currentGame.popCard());
     }
 
     public void placeCard() {
@@ -65,5 +65,17 @@ public class Spieler {
 
     public int getPoints() {
         return getBonus() - haeuser;
+    }
+
+    public List<Stadt> getHand() {
+        return hand;
+    }
+
+    public List<Stadt> getRoute() {
+        return route;
+    }
+
+    public int getHaeuser() {
+        return haeuser;
     }
 }
