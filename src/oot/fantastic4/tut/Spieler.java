@@ -31,9 +31,10 @@ public class Spieler {
 
     }
 
-    public void drawCard() {
+    public void drawCardFromStack() {
         Stadt karte = currentGame.popCard();
         hand.add(karte);
+        refreshView();
         MainWindow.getInstance().outputLogln(karte + " gezogen!");
     }
 
@@ -91,6 +92,18 @@ public class Spieler {
         }
 
         MainWindow.getInstance().outputLogln(stadt + " zur Route hinzugefügt.");
+        refreshView();
+
+    }
+
+    public void drawCardFromAuslage(int index) {
+        Stadt karte = currentGame.popAuslageCard(index);
+        hand.add(karte);
+        MainWindow.getInstance().outputLogln(karte + " gezogen!");
+        refreshView();
+    }
+
+    public void refreshView() {
         MainWindow.getInstance().loadPlayerView(this);
     }
 }

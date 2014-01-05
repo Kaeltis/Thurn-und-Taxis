@@ -17,10 +17,15 @@ public class Game {
 
     private List<Spieler> mitspieler = new LinkedList<Spieler>();
     private Stapel kartenStapel = new Stapel();
-    private Stadt[] offeneKarten = new Stadt[6];
+    private List<Stadt> auslageKarten = new LinkedList<Stadt>();
     private UndirectedGraph<Stadt, DefaultEdge> mapGraph;
+
+
     private boolean gameRunning = true;
     private int currentPlayer = 0;
+    private boolean drawAllowed = false;
+    private boolean placeRouteAllowed = false;
+
     private int bonusEnde;
     private int bonus5er;
     private int bonus6er;
@@ -135,22 +140,32 @@ public class Game {
 
     public void startGame() {
         mainWindow.outputLogln("Spiel Gestartet!");
+        addOpenCards(6);
         loadCurrentPlayer();
+    }
+
+    private void addOpenCards(int anzahl) {
+
+        for (int i = 1; i <= anzahl; i++) {
+            auslageKarten.add(kartenStapel.pop());
+        }
+
+        mainWindow.loadAuslage(auslageKarten);
     }
 
     public void loadCurrentPlayer() {
         if (gameRunning) {
-            Spieler player = mitspieler.get(currentPlayer);
-            beginTurn(player);
+            beginTurn(getCurrentPlayer());
         } else {
             endGame();
         }
     }
 
     public void beginTurn(Spieler spieler) {
-        mainWindow.outputLogln(spieler.getName() + " ist an der Reihe");
-        spieler.drawCard();
+        mainWindow.outputLogln(spieler.getName() + " ist an der Reihe.");
         mainWindow.loadPlayerView(spieler);
+        mainWindow.outputLogln("Bitte Karte vom Stapel oder der Auslage ziehen.");
+        setDrawAllowed(true);
     }
 
     public void endGame() {
@@ -170,21 +185,24 @@ public class Game {
     }
 
     public void selectCity(Stadt stadt) {
-        Spieler player = mitspieler.get(currentPlayer);
+        if (isPlaceRouteAllowed()) {
+            Spieler player = getCurrentPlayer();
 
-        if (player.getHand().contains(stadt)) {
-            checkRoute(stadt);
-        } else {
-            mainWindow.showMessage("Stadt nicht auf der Hand!", "Nicht möglich!", JOptionPane.WARNING_MESSAGE);
+            if (player.getHand().contains(stadt)) {
+                checkRoute(stadt);
+            } else {
+                mainWindow.showMessage("Stadt nicht auf der Hand!", "Nicht möglich!", JOptionPane.WARNING_MESSAGE);
+            }
         }
     }
 
     public void checkRoute(Stadt stadt) {
-        Spieler player = mitspieler.get(currentPlayer);
+        Spieler player = getCurrentPlayer();
         List<Stadt> route = player.getRoute();
 
         // Leere Route
         if (route.isEmpty()) {
+            setPlaceRouteAllowed(false);
             player.addToRoute(stadt, false);
             // Eine Karte in Route
         } else if (route.size() == 1) {
@@ -193,8 +211,10 @@ public class Game {
                 Object[] options = {"Anfang", "Ende"};
                 int selection = mainWindow.askMessage(options, "Karte wo anfügen?", "Frage");
                 if (selection == JOptionPane.OK_OPTION) {
+                    setPlaceRouteAllowed(false);
                     player.addToRoute(stadt, true);
                 } else {
+                    setPlaceRouteAllowed(false);
                     player.addToRoute(stadt, false);
                 }
             } else {
@@ -206,13 +226,42 @@ public class Game {
             Stadt last = route.get(route.size() - 1);
 
             if (mapGraph.edgesOf(stadt).contains(first)) {
+                setPlaceRouteAllowed(false);
                 player.addToRoute(stadt, true);
             } else if (mapGraph.edgesOf(stadt).contains(last)) {
+                setPlaceRouteAllowed(false);
                 player.addToRoute(stadt, false);
             } else {
                 mainWindow.showMessage("Route nicht möglich!", "Nicht möglich!", JOptionPane.WARNING_MESSAGE);
             }
 
         }
+    }
+
+    public Spieler getCurrentPlayer() {
+        return mitspieler.get(currentPlayer);
+    }
+
+    public Stadt popAuslageCard(int index) {
+        Stadt karte = auslageKarten.get(index);
+        auslageKarten.remove(index);
+        mainWindow.loadAuslage(auslageKarten);
+        return karte;
+    }
+
+    public void setDrawAllowed(boolean status) {
+        drawAllowed = status;
+    }
+
+    public void setPlaceRouteAllowed(boolean status) {
+        placeRouteAllowed = status;
+    }
+
+    public boolean isDrawAllowed() {
+        return drawAllowed;
+    }
+
+    public boolean isPlaceRouteAllowed() {
+        return placeRouteAllowed;
     }
 }

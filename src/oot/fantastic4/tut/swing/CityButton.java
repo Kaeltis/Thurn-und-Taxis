@@ -1,5 +1,6 @@
 package oot.fantastic4.tut.swing;
 
+import oot.fantastic4.tut.MainWindow;
 import oot.fantastic4.tut.Stadt;
 
 import javax.swing.*;

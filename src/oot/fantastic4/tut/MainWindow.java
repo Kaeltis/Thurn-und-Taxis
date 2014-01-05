@@ -2,15 +2,21 @@ package oot.fantastic4.tut;
 
 import oot.fantastic4.tut.swing.CityButton;
 import oot.fantastic4.tut.swing.ImagePanel;
-import oot.fantastic4.tut.swing.MapClickHandler;
 import oot.fantastic4.tut.swing.NoEditTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultCaret;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by kaeltis on 13.12.13.
@@ -36,17 +42,48 @@ public class MainWindow {
     private JTable routeTable;
     private JTable statsTable;
     private JTable handTable;
+    private JButton endTurnButton;
 
     private MainWindow() {
+
+        kartenstapelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (mainGame.isDrawAllowed()) {
+                    mainGame.setDrawAllowed(false);
+                    mainGame.getCurrentPlayer().drawCardFromStack();
+                }
+            }
+        });
+
+        auslageTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                if (mainGame.isDrawAllowed()) {
+                    JTable table = (JTable) me.getSource();
+                    Point p = me.getPoint();
+                    int row = table.rowAtPoint(p);
+                    if (me.getClickCount() == 2) {
+                        mainGame.setDrawAllowed(false);
+                        mainGame.getCurrentPlayer().drawCardFromAuslage(row);
+                    }
+                }
+            }
+        });
+
     }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Thurn und Taxis");
         frame.setContentPane(getInstance().mainPanel);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.pack();
+        //frame.pack();
+        //frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setSize(screenSize.width - 150, screenSize.height - 150);
+        frame.validate();
+
         frame.setVisible(true);
-        frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 
         // Game Setup
         getInstance().mainGame = Game.getInstance();
@@ -211,10 +248,24 @@ public class MainWindow {
             }
         }
 
-        statsTableModel.addRow(new Object[]{"Spieler", spieler.getName()});
+        statsTableModel.addRow(new Object[]{"Aktueller Spieler", spieler.getName()});
         statsTableModel.addRow(new Object[]{"Häuser", spieler.getHaeuser()});
         statsTableModel.addRow(new Object[]{"Bonus", spieler.getBonus()});
         statsTableModel.addRow(new Object[]{"Punkte", spieler.getPoints()});
+    }
+
+    public void loadAuslage(List<Stadt> auslage) {
+        // Tabelle leeren
+        if (auslageTableModel.getRowCount() > 0) {
+            for (int i = auslageTableModel.getRowCount() - 1; i > -1; i--) {
+                auslageTableModel.removeRow(i);
+            }
+        }
+
+        // Route laden
+        for (Stadt karte : auslage) {
+            auslageTableModel.addRow(new Object[]{karte});
+        }
     }
 
     public void loadPlayerView(Spieler spieler) {
@@ -222,6 +273,4 @@ public class MainWindow {
         loadRoute(spieler);
         loadInfo(spieler);
     }
-
-
 }
