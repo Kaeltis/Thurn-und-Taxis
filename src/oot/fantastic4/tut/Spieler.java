@@ -34,7 +34,7 @@ public class Spieler {
     public void drawCard() {
         Stadt karte = currentGame.popCard();
         hand.add(karte);
-        MainWindow.getInstance().outputLog(karte + " gezogen!");
+        MainWindow.getInstance().outputLogln(karte + " gezogen!");
     }
 
     public void placeCard() {
@@ -79,5 +79,18 @@ public class Spieler {
 
     public int getHaeuser() {
         return haeuser;
+    }
+
+    public void addToRoute(Stadt stadt, boolean anfang) {
+        hand.remove(stadt);
+
+        if (anfang) {
+            route.add(0, stadt);
+        } else {
+            route.add(stadt);
+        }
+
+        MainWindow.getInstance().outputLogln(stadt + " zur Route hinzugefügt.");
+        MainWindow.getInstance().loadPlayerView(this);
     }
 }

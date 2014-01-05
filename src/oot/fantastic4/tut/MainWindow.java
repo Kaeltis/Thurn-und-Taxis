@@ -54,8 +54,19 @@ public class MainWindow {
         getInstance().mainGame.startGame();
     }
 
-    public void showMessage(String message, String title) {
-        JOptionPane.showMessageDialog(mainPanel, message, title, JOptionPane.CANCEL_OPTION);
+    public void showMessage(String message, String title, int option) {
+        JOptionPane.showMessageDialog(mainPanel, message, title, option);
+    }
+
+    public int askMessage(Object[] options, String message, String title) {
+        return JOptionPane.showOptionDialog(mainPanel,
+                message,
+                title,
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]);
     }
 
     private void createUIComponents() {
@@ -68,14 +79,14 @@ public class MainWindow {
                 }
             }
         } catch (Exception e) {
-            showMessage("Java Nimbus LookAndFeel nicht gefunden!", "Fehler");
+            showMessage("Java Nimbus LookAndFeel nicht gefunden!", "Fehler", JOptionPane.ERROR_MESSAGE);
         }
 
         // Map Background
         try {
             mapPanel = new ImagePanel("src/oot/fantastic4/tut/resources/thurnplan.jpg");
         } catch (IOException ex) {
-            showMessage("Maphintergrund nicht gefunden!", "Fehler");
+            showMessage("Maphintergrund nicht gefunden!", "Fehler", JOptionPane.ERROR_MESSAGE);
         }
 
         // Map Buttons
@@ -144,7 +155,7 @@ public class MainWindow {
         this.statusTextArea.append("[" + sdf.format(cal.getTime()) + "] " + text);
     }
 
-    private void enterPlayers() throws IllegalStateException {
+    private void enterPlayers() {
         String spielername;
         int count = 1;
 
@@ -157,7 +168,10 @@ public class MainWindow {
             }
         } while (spielername != null);
 
-        if (count == 1) throw new IllegalStateException("Mindestens 1 Spieler notwendig!");
+        if (count <= 2) {
+            showMessage("Mindestens 2 Spieler notwendig!", "Fehler", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException("Mindestens 2 Spieler notwendig!");
+        }
     }
 
 

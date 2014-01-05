@@ -1,5 +1,10 @@
 package oot.fantastic4.tut;
 
+import org.jgrapht.UndirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
+
+import javax.swing.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +18,7 @@ public class Game {
     private List<Spieler> mitspieler = new LinkedList<Spieler>();
     private Stapel kartenStapel = new Stapel();
     private Stadt[] offeneKarten = new Stadt[6];
+    private UndirectedGraph<Stadt, DefaultEdge> mapGraph;
     private boolean gameRunning = true;
     private int currentPlayer = 0;
     private int bonusEnde;
@@ -28,6 +34,83 @@ public class Game {
 
     private Game() {
         mainWindow = MainWindow.getInstance();
+        mapGraph = createMapGraph();
+    }
+
+    private UndirectedGraph<Stadt, DefaultEdge> createMapGraph() {
+        UndirectedGraph<Stadt, DefaultEdge> graph =
+                new SimpleGraph<Stadt, DefaultEdge>(DefaultEdge.class);
+
+        for (Stadt stadt : Stadt.values()) {
+            graph.addVertex(stadt);
+        }
+
+        graph.addEdge(Stadt.MANNHEIM, Stadt.WÜRZBURG);
+        graph.addEdge(Stadt.MANNHEIM, Stadt.STUTTGART);
+        graph.addEdge(Stadt.MANNHEIM, Stadt.CARLSRUHE);
+
+        graph.addEdge(Stadt.CARLSRUHE, Stadt.STUTTGART);
+        graph.addEdge(Stadt.CARLSRUHE, Stadt.FREIBURG);
+
+        graph.addEdge(Stadt.FREIBURG, Stadt.SIGMARINGEN);
+        graph.addEdge(Stadt.FREIBURG, Stadt.BASEL);
+        graph.addEdge(Stadt.FREIBURG, Stadt.ZÜRICH);
+
+        graph.addEdge(Stadt.BASEL, Stadt.ZÜRICH);
+
+        graph.addEdge(Stadt.STUTTGART, Stadt.WÜRZBURG);
+        graph.addEdge(Stadt.STUTTGART, Stadt.NÜRNBERG);
+        graph.addEdge(Stadt.STUTTGART, Stadt.INGOLSTADT);
+        graph.addEdge(Stadt.STUTTGART, Stadt.ULM);
+        graph.addEdge(Stadt.STUTTGART, Stadt.SIGMARINGEN);
+
+        graph.addEdge(Stadt.SIGMARINGEN, Stadt.ULM);
+        graph.addEdge(Stadt.SIGMARINGEN, Stadt.KEMPTEN);
+        graph.addEdge(Stadt.SIGMARINGEN, Stadt.ZÜRICH);
+
+        graph.addEdge(Stadt.ZÜRICH, Stadt.KEMPTEN);
+
+        graph.addEdge(Stadt.WÜRZBURG, Stadt.NÜRNBERG);
+
+        graph.addEdge(Stadt.ULM, Stadt.INGOLSTADT);
+        graph.addEdge(Stadt.ULM, Stadt.AUGSBURG);
+        graph.addEdge(Stadt.ULM, Stadt.KEMPTEN);
+
+        graph.addEdge(Stadt.KEMPTEN, Stadt.AUGSBURG);
+        graph.addEdge(Stadt.KEMPTEN, Stadt.INNSBRUCK);
+
+        graph.addEdge(Stadt.NÜRNBERG, Stadt.PILSEN);
+        graph.addEdge(Stadt.NÜRNBERG, Stadt.REGENSBURG);
+        graph.addEdge(Stadt.NÜRNBERG, Stadt.INGOLSTADT);
+
+        graph.addEdge(Stadt.INGOLSTADT, Stadt.REGENSBURG);
+        graph.addEdge(Stadt.INGOLSTADT, Stadt.MÜNCHEN);
+        graph.addEdge(Stadt.INGOLSTADT, Stadt.AUGSBURG);
+
+        graph.addEdge(Stadt.AUGSBURG, Stadt.MÜNCHEN);
+        graph.addEdge(Stadt.AUGSBURG, Stadt.INNSBRUCK);
+
+        graph.addEdge(Stadt.INNSBRUCK, Stadt.MÜNCHEN);
+        graph.addEdge(Stadt.INNSBRUCK, Stadt.SALZBURG);
+
+        graph.addEdge(Stadt.PILSEN, Stadt.LODZ);
+        graph.addEdge(Stadt.PILSEN, Stadt.BUDWEIS);
+        graph.addEdge(Stadt.PILSEN, Stadt.REGENSBURG);
+
+        graph.addEdge(Stadt.REGENSBURG, Stadt.PASSAU);
+        graph.addEdge(Stadt.REGENSBURG, Stadt.MÜNCHEN);
+
+        graph.addEdge(Stadt.MÜNCHEN, Stadt.PASSAU);
+        graph.addEdge(Stadt.MÜNCHEN, Stadt.SALZBURG);
+
+        graph.addEdge(Stadt.BUDWEIS, Stadt.LINZ);
+
+        graph.addEdge(Stadt.PASSAU, Stadt.LINZ);
+        graph.addEdge(Stadt.PASSAU, Stadt.SALZBURG);
+
+        graph.addEdge(Stadt.LINZ, Stadt.SALZBURG);
+
+        return graph;
     }
 
     public static Game getInstance() {
@@ -90,9 +173,46 @@ public class Game {
         Spieler player = mitspieler.get(currentPlayer);
 
         if (player.getHand().contains(stadt)) {
-            mainWindow.showMessage("Stadt Gefunden", "Gefunden!");
+            checkRoute(stadt);
         } else {
-            mainWindow.showMessage("Stadt nicht auf der Hand!", "Fehler!");
+            mainWindow.showMessage("Stadt nicht auf der Hand!", "Nicht möglich!", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    public void checkRoute(Stadt stadt) {
+        Spieler player = mitspieler.get(currentPlayer);
+        List<Stadt> route = player.getRoute();
+
+        // Leere Route
+        if (route.isEmpty()) {
+            player.addToRoute(stadt, false);
+            // Eine Karte in Route
+        } else if (route.size() == 1) {
+            Stadt first = route.get(0);
+            if (mapGraph.edgesOf(stadt).contains(first)) {
+                Object[] options = {"Anfang", "Ende"};
+                int selection = mainWindow.askMessage(options, "Karte wo anfügen?", "Frage");
+                if (selection == JOptionPane.OK_OPTION) {
+                    player.addToRoute(stadt, true);
+                } else {
+                    player.addToRoute(stadt, false);
+                }
+            } else {
+                mainWindow.showMessage("Route nicht möglich!", "Nicht möglich!", JOptionPane.WARNING_MESSAGE);
+            }
+            // Mehrere Karten in Route
+        } else {
+            Stadt first = route.get(0);
+            Stadt last = route.get(route.size() - 1);
+
+            if (mapGraph.edgesOf(stadt).contains(first)) {
+                player.addToRoute(stadt, true);
+            } else if (mapGraph.edgesOf(stadt).contains(last)) {
+                player.addToRoute(stadt, false);
+            } else {
+                mainWindow.showMessage("Route nicht möglich!", "Nicht möglich!", JOptionPane.WARNING_MESSAGE);
+            }
+
         }
     }
 }
