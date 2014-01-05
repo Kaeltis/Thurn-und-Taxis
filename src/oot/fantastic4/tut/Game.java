@@ -204,6 +204,7 @@ public class Game {
         if (route.isEmpty()) {
             setPlaceRouteAllowed(false);
             player.addToRoute(stadt, false);
+            continueAfterRoutePlaced();
             // Eine Karte in Route
         } else if (route.size() == 1) {
             Stadt first = route.get(0);
@@ -213,9 +214,11 @@ public class Game {
                 if (selection == JOptionPane.OK_OPTION) {
                     setPlaceRouteAllowed(false);
                     player.addToRoute(stadt, true);
+                    continueAfterRoutePlaced();
                 } else {
                     setPlaceRouteAllowed(false);
                     player.addToRoute(stadt, false);
+                    continueAfterRoutePlaced();
                 }
             } else {
                 mainWindow.showMessage("Route nicht möglich!", "Nicht möglich!", JOptionPane.WARNING_MESSAGE);
@@ -228,9 +231,11 @@ public class Game {
             if (mapGraph.edgesOf(stadt).contains(first)) {
                 setPlaceRouteAllowed(false);
                 player.addToRoute(stadt, true);
+                continueAfterRoutePlaced();
             } else if (mapGraph.edgesOf(stadt).contains(last)) {
                 setPlaceRouteAllowed(false);
                 player.addToRoute(stadt, false);
+                continueAfterRoutePlaced();
             } else {
                 mainWindow.showMessage("Route nicht möglich!", "Nicht möglich!", JOptionPane.WARNING_MESSAGE);
             }
@@ -263,5 +268,21 @@ public class Game {
 
     public boolean isPlaceRouteAllowed() {
         return placeRouteAllowed;
+    }
+
+    public void continueAfterDraw() {
+        setPlaceRouteAllowed(true);
+        mainWindow.outputLogln("Bitte Karte zur Route legen.");
+    }
+
+    private void continueAfterRoutePlaced() {
+        mainWindow.outputLogln("Bitte Zug beenden oder Amtsperson benutzen.");
+        mainWindow.setEndTurnButtonStatus(true);
+    }
+
+    public void nextTurn() {
+        mainWindow.setEndTurnButtonStatus(false);
+        currentPlayer++;
+        loadCurrentPlayer();
     }
 }

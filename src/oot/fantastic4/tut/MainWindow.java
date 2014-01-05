@@ -52,6 +52,7 @@ public class MainWindow {
                 if (mainGame.isDrawAllowed()) {
                     mainGame.setDrawAllowed(false);
                     mainGame.getCurrentPlayer().drawCardFromStack();
+                    mainGame.continueAfterDraw();
                 }
             }
         });
@@ -66,11 +67,18 @@ public class MainWindow {
                     if (me.getClickCount() == 2) {
                         mainGame.setDrawAllowed(false);
                         mainGame.getCurrentPlayer().drawCardFromAuslage(row);
+                        mainGame.continueAfterDraw();
                     }
                 }
             }
         });
 
+        endTurnButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainGame.nextTurn();
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -272,5 +280,9 @@ public class MainWindow {
         loadHandkarten(spieler);
         loadRoute(spieler);
         loadInfo(spieler);
+    }
+
+    public void setEndTurnButtonStatus(boolean status) {
+        endTurnButton.setEnabled(status);
     }
 }
