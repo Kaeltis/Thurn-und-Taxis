@@ -92,7 +92,7 @@ public class Game {
         if (player.getHand().contains(stadt)) {
             mainWindow.showMessage("Stadt Gefunden", "Gefunden!");
         } else {
-            mainWindow.showMessage("Stadt NICHT Gefunden", "Nope!");
+            mainWindow.showMessage("Stadt nicht auf der Hand!", "Fehler!");
         }
     }
 }

@@ -32,7 +32,9 @@ public class Spieler {
     }
 
     public void drawCard() {
-        hand.add(currentGame.popCard());
+        Stadt karte = currentGame.popCard();
+        hand.add(karte);
+        MainWindow.getInstance().outputLog(karte + " gezogen!");
     }
 
     public void placeCard() {
