@@ -1,6 +1,7 @@
 package oot.fantastic4.tut;
 
 import oot.fantastic4.tut.swing.CityButton;
+import oot.fantastic4.tut.swing.HouseCellRenderer;
 import oot.fantastic4.tut.swing.ImagePanel;
 import oot.fantastic4.tut.swing.NoEditTableModel;
 
@@ -212,6 +213,7 @@ public class MainWindow {
         // Stats Tabelle
         statsTableModel = new NoEditTableModel(new String[]{"Name", "Wert"}, 0);
         statsTable = new JTable(statsTableModel);
+        statsTable.getColumnModel().getColumn(1).setCellRenderer(new HouseCellRenderer());
 
         // Log Text
         statusTextArea = new JTextArea();
@@ -293,9 +295,10 @@ public class MainWindow {
         }
 
         statsTableModel.addRow(new Object[]{"Aktueller Spieler", spieler.getName()});
-        statsTableModel.addRow(new Object[]{"Häuser", spieler.getHaeuser()});
+        statsTableModel.addRow(new Object[]{"Übrige Häuser", spieler.getHaeuser()});
         statsTableModel.addRow(new Object[]{"Bonus", spieler.getBonus()});
         statsTableModel.addRow(new Object[]{"Punkte", spieler.getPoints()});
+        statsTableModel.addRow(new Object[]{"Gesetzte Häuser", spieler.getPlacedHouses()});
     }
 
     public void loadAuslage(List<Stadt> auslage) {

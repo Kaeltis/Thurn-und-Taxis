@@ -31,7 +31,6 @@ public enum Stadt {
     LODZ(Land.POLEN);
 
     private Land land;
-    private List<Spieler> houses = new LinkedList<Spieler>();
 
     Stadt(Land land) {
         this.land = land;
@@ -41,11 +40,4 @@ public enum Stadt {
         return land;
     }
 
-    public void addHouse(Spieler spieler) {
-        this.houses.add(spieler);
-    }
-
-    public boolean hasHouse(Spieler spieler) {
-        return this.houses.contains(spieler);
-    }
 }

@@ -11,6 +11,7 @@ public class Spieler {
     private Game currentGame;
     private Bonus bonus = new Bonus();
     private int haeuser = 20;
+    private List<Stadt> placedHouses = new LinkedList<Stadt>();
     private List<Stadt> hand = new LinkedList<Stadt>();
     private List<Stadt> route = new LinkedList<Stadt>();
 
@@ -33,13 +34,15 @@ public class Spieler {
                 currentGame.setLastRound(true);
             }
 
+            MainWindow.getInstance().setFinishRouteButtonStatus(false);
+
             refreshView();
         }
     }
 
     public void placeHouse(Stadt stadt) {
-        if (!stadt.hasHouse(this)) {
-            stadt.addHouse(this);
+        if (!placedHouses.contains(stadt)) {
+            placedHouses.add(stadt);
             haeuser--;
         }
     }
@@ -156,5 +159,15 @@ public class Spieler {
     @Override
     public String toString() {
         return "Name: " + getName() + "\nPunkte: " + getPoints() + "\n";
+    }
+
+    public String getPlacedHouses() {
+        String output = "";
+
+        for (Stadt stadt : placedHouses) {
+            output += stadt + ",\n";
+        }
+
+        return output;
     }
 }
