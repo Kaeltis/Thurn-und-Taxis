@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -163,7 +164,8 @@ public class MainWindow {
 
         // Map Background
         try {
-            mapPanel = new ImagePanel("src/oot/fantastic4/tut/resources/thurnplan.jpg");
+            URL url = getClass().getResource("resources/thurnplan.jpg");
+            mapPanel = new ImagePanel(url);
         } catch (IOException ex) {
             showMessage("Maphintergrund nicht gefunden!", "Fehler", JOptionPane.ERROR_MESSAGE);
         }

@@ -6,13 +6,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 public class ImagePanel extends JPanel {
 
     private BufferedImage image;
 
-    public ImagePanel(String path) throws IOException {
-        image = ImageIO.read(new File(path));
+    public ImagePanel(URL url) throws IOException {
+        image = ImageIO.read(url);
     }
 
     @Override
