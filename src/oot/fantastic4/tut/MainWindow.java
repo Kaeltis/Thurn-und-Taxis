@@ -161,6 +161,7 @@ public class MainWindow {
             }
         } catch (Exception e) {
             showMessage("Java Nimbus LookAndFeel nicht gefunden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
         }
 
         // Map Background
@@ -169,6 +170,7 @@ public class MainWindow {
             mapPanel = new ImagePanel(url);
         } catch (IOException ex) {
             showMessage("Maphintergrund nicht gefunden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
         }
 
         // Map Buttons
@@ -253,7 +255,7 @@ public class MainWindow {
 
         if (count <= 2) {
             showMessage("Mindestens 2 Spieler notwendig!", "Fehler", JOptionPane.ERROR_MESSAGE);
-            throw new RuntimeException("Mindestens 2 Spieler notwendig!");
+            System.exit(1);
         }
     }
 
