@@ -118,7 +118,7 @@ public class MainWindow {
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Thurn und Taxis");
+        JFrame frame = new JFrame("Thurn und Taxis by Fantastic 4");
         frame.setContentPane(getInstance().mainPanel);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         //frame.pack();
