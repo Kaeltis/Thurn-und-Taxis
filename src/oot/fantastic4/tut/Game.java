@@ -5,8 +5,10 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
 import javax.swing.*;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * Created by Patrick on 15.12.13.
@@ -16,13 +18,18 @@ public class Game {
     private MainWindow mainWindow;
 
     private List<Spieler> mitspieler = new LinkedList<Spieler>();
-    private Stapel kartenStapel = new Stapel();
+    private Queue<Stadt> kartenStapel;
     private List<Stadt> auslageKarten = new LinkedList<Stadt>();
     private UndirectedGraph<Stadt, DefaultEdge> mapGraph;
 
-
     private boolean gameRunning = true;
+    private boolean lastRound = false;
+
     private int currentPlayer = 0;
+    private boolean usedOfficial = false;
+    private boolean usingOfficial = false;
+    private boolean lastStep = false;
+
     private boolean drawAllowed = false;
     private boolean placeRouteAllowed = false;
 
@@ -40,6 +47,8 @@ public class Game {
     private Game() {
         mainWindow = MainWindow.getInstance();
         mapGraph = createMapGraph();
+        kartenStapel = createStapel();
+        shuffleStapel();
     }
 
     private UndirectedGraph<Stadt, DefaultEdge> createMapGraph() {
@@ -118,6 +127,22 @@ public class Game {
         return graph;
     }
 
+    private Queue<Stadt> createStapel() {
+        Queue<Stadt> stapel = new LinkedList<Stadt>();
+
+        for (Stadt stadt : Stadt.values()) {
+            stapel.add(stadt);
+            stapel.add(stadt);
+            stapel.add(stadt);
+        }
+
+        return stapel;
+    }
+
+    private void shuffleStapel() {
+        Collections.shuffle((LinkedList) kartenStapel);
+    }
+
     public static Game getInstance() {
         return instance;
     }
@@ -127,12 +152,12 @@ public class Game {
     }
 
     public Spieler selectWinner() {
-        Spieler winner = null;
+        Spieler winner = mitspieler.get(0);
 
         for (Spieler spieler : mitspieler) {
-            //if(spieler.getPoints() > winner.getPoints()) {
-            //    winner = spieler;
-            //}
+            if (spieler.getPoints() > winner.getPoints()) {
+                winner = spieler;
+            }
         }
 
         return winner;
@@ -144,10 +169,10 @@ public class Game {
         loadCurrentPlayer();
     }
 
-    private void addOpenCards(int anzahl) {
+    public void addOpenCards(int anzahl) {
 
         for (int i = 1; i <= anzahl; i++) {
-            auslageKarten.add(kartenStapel.pop());
+            auslageKarten.add(pollCard());
         }
 
         mainWindow.loadAuslage(auslageKarten);
@@ -162,14 +187,14 @@ public class Game {
     }
 
     public void beginTurn(Spieler spieler) {
-        mainWindow.outputLogln(spieler.getName() + " ist an der Reihe.");
+        mainWindow.showMessage(spieler.getName() + " ist an der Reihe.", spieler.getName(), JOptionPane.INFORMATION_MESSAGE);
         mainWindow.loadPlayerView(spieler);
-        mainWindow.outputLogln("Bitte Karte vom Stapel oder der Auslage ziehen.");
         setDrawAllowed(true);
     }
 
     public void endGame() {
-        mainWindow.outputLogln("Spiel Beendet!");
+        mainWindow.showMessage("Spiel beendet! Punkte: " + mitspieler, "Ende!", JOptionPane.INFORMATION_MESSAGE);
+        System.exit(0);
     }
 
     public void giveBonus(Spieler spieler) {
@@ -177,11 +202,21 @@ public class Game {
     }
 
     public void swapOpenCards() {
+        for (Stadt karte : auslageKarten) {
+            addCard(karte);
+        }
+        auslageKarten.clear();
+        addOpenCards(6);
 
+        setUsingOfficial(false);
     }
 
-    public Stadt popCard() {
-        return kartenStapel.pop();
+    public Stadt pollCard() {
+        return kartenStapel.poll();
+    }
+
+    public void addCard(Stadt item) {
+        kartenStapel.add(item);
     }
 
     public void selectCity(Stadt stadt) {
@@ -202,21 +237,18 @@ public class Game {
 
         // Leere Route
         if (route.isEmpty()) {
-            setPlaceRouteAllowed(false);
             player.addToRoute(stadt, false);
             continueAfterRoutePlaced();
             // Eine Karte in Route
         } else if (route.size() == 1) {
             Stadt first = route.get(0);
-            if (mapGraph.edgesOf(stadt).contains(first)) {
+            if (mapGraph.containsEdge(stadt, first)) {
                 Object[] options = {"Anfang", "Ende"};
                 int selection = mainWindow.askMessage(options, "Karte wo anfügen?", "Frage");
                 if (selection == JOptionPane.OK_OPTION) {
-                    setPlaceRouteAllowed(false);
                     player.addToRoute(stadt, true);
                     continueAfterRoutePlaced();
                 } else {
-                    setPlaceRouteAllowed(false);
                     player.addToRoute(stadt, false);
                     continueAfterRoutePlaced();
                 }
@@ -228,12 +260,10 @@ public class Game {
             Stadt first = route.get(0);
             Stadt last = route.get(route.size() - 1);
 
-            if (mapGraph.edgesOf(stadt).contains(first)) {
-                setPlaceRouteAllowed(false);
+            if (mapGraph.containsEdge(stadt, first)) {
                 player.addToRoute(stadt, true);
                 continueAfterRoutePlaced();
-            } else if (mapGraph.edgesOf(stadt).contains(last)) {
-                setPlaceRouteAllowed(false);
+            } else if (mapGraph.containsEdge(stadt, last)) {
                 player.addToRoute(stadt, false);
                 continueAfterRoutePlaced();
             } else {
@@ -256,10 +286,17 @@ public class Game {
 
     public void setDrawAllowed(boolean status) {
         drawAllowed = status;
+        if (status) {
+            mainWindow.outputLogln("Bitte Karte vom Stapel oder der Auslage ziehen.");
+        }
     }
 
     public void setPlaceRouteAllowed(boolean status) {
         placeRouteAllowed = status;
+        mainWindow.setDeleteCurrentRouteButtonStatus(status);
+        if (status) {
+            mainWindow.outputLogln("Bitte Karte zur Route legen.");
+        }
     }
 
     public boolean isDrawAllowed() {
@@ -271,18 +308,75 @@ public class Game {
     }
 
     public void continueAfterDraw() {
-        setPlaceRouteAllowed(true);
-        mainWindow.outputLogln("Bitte Karte zur Route legen.");
+        if (!isUsingOfficial()) {
+            setPlaceRouteAllowed(true);
+        } else {
+            setUsingOfficial(false);
+        }
     }
 
     private void continueAfterRoutePlaced() {
-        mainWindow.outputLogln("Bitte Zug beenden oder Amtsperson benutzen.");
-        mainWindow.setEndTurnButtonStatus(true);
+        setPlaceRouteAllowed(false);
+        setLastStep(true);
+
+        if (!isUsingOfficial()) {
+            mainWindow.outputLogln("Bitte Zug beenden, Route abschließen oder Amtsperson benutzen.");
+            if (getCurrentPlayer().getRoute().size() >= 3)
+                mainWindow.setFinishRouteButtonStatus(true);
+            mainWindow.setEndTurnButtonStatus(true);
+        } else {
+            setUsingOfficial(false);
+        }
     }
 
     public void nextTurn() {
+        mainWindow.setFinishRouteButtonStatus(false);
         mainWindow.setEndTurnButtonStatus(false);
-        currentPlayer++;
+
+        setUsedOfficial(false);
+        setLastStep(false);
+        setNextPlayer();
         loadCurrentPlayer();
+    }
+
+    private void setNextPlayer() {
+        int playercount = mitspieler.size();
+
+        if (currentPlayer == playercount - 1) {
+            if (lastRound) {
+                gameRunning = false;
+            }
+            currentPlayer = 0;
+        } else {
+            currentPlayer++;
+        }
+    }
+
+    public void setLastRound(boolean lastRound) {
+        this.lastRound = lastRound;
+    }
+
+    public boolean hasUsedOfficial() {
+        return usedOfficial;
+    }
+
+    public void setUsedOfficial(boolean usedOfficial) {
+        this.usedOfficial = usedOfficial;
+    }
+
+    public boolean isUsingOfficial() {
+        return usingOfficial;
+    }
+
+    public void setUsingOfficial(boolean usingOfficial) {
+        this.usingOfficial = usingOfficial;
+    }
+
+    public boolean isLastStep() {
+        return lastStep;
+    }
+
+    public void setLastStep(boolean lastStep) {
+        this.lastStep = lastStep;
     }
 }

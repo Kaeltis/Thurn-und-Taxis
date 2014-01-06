@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -43,6 +42,8 @@ public class MainWindow {
     private JTable statsTable;
     private JTable handTable;
     private JButton endTurnButton;
+    private JButton deleteCurrentRouteButton;
+    private JButton finishRouteButton;
 
     private MainWindow() {
 
@@ -67,6 +68,7 @@ public class MainWindow {
                     if (me.getClickCount() == 2) {
                         mainGame.setDrawAllowed(false);
                         mainGame.getCurrentPlayer().drawCardFromAuslage(row);
+                        mainGame.addOpenCards(1);
                         mainGame.continueAfterDraw();
                     }
                 }
@@ -77,6 +79,38 @@ public class MainWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mainGame.nextTurn();
+            }
+        });
+
+        deleteCurrentRouteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainGame.getCurrentPlayer().deleteRoute();
+            }
+        });
+
+        finishRouteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainGame.getCurrentPlayer().finishRoute();
+            }
+        });
+        amtmannButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainGame.getCurrentPlayer().useBailiff();
+            }
+        });
+        postmeisterButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainGame.getCurrentPlayer().usePostmaster();
+            }
+        });
+        postillionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainGame.getCurrentPlayer().usePostillion();
             }
         });
     }
@@ -284,5 +318,13 @@ public class MainWindow {
 
     public void setEndTurnButtonStatus(boolean status) {
         endTurnButton.setEnabled(status);
+    }
+
+    public void setFinishRouteButtonStatus(boolean status) {
+        finishRouteButton.setEnabled(status);
+    }
+
+    public void setDeleteCurrentRouteButtonStatus(boolean status) {
+        deleteCurrentRouteButton.setEnabled(status);
     }
 }

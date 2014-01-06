@@ -20,11 +20,28 @@ public class Spieler {
     }
 
     public void finishRoute() {
+        if (route.size() >= 3) {
 
+            for (Stadt stadt : route) {
+                placeHouse(stadt);
+            }
+
+            deleteRoute();
+            MainWindow.getInstance().outputLogln("Route abgeschlossen!");
+
+            if (haeuser <= 0) {
+                currentGame.setLastRound(true);
+            }
+
+            refreshView();
+        }
     }
 
     public void placeHouse(Stadt stadt) {
-
+        if (!stadt.hasHouse(this)) {
+            stadt.addHouse(this);
+            haeuser--;
+        }
     }
 
     public void removeCards() {
@@ -32,30 +49,51 @@ public class Spieler {
     }
 
     public void drawCardFromStack() {
-        Stadt karte = currentGame.popCard();
+        Stadt karte = currentGame.pollCard();
         hand.add(karte);
         refreshView();
         MainWindow.getInstance().outputLogln(karte + " gezogen!");
     }
 
-    public void placeCard() {
-
-    }
-
-    public void chooseOfficial() {
-
-    }
-
     public void useBailiff() {
+        if (!currentGame.hasUsedOfficial()) {
+            MainWindow.getInstance().outputLogln("Amtmann benutzt!");
+            currentGame.setUsedOfficial(true);
+            currentGame.setUsingOfficial(true);
 
+            currentGame.swapOpenCards();
+        }
     }
 
     public void usePostillion() {
+        if (!currentGame.hasUsedOfficial()) {
+            int minKarten;
 
+            if (currentGame.isLastStep())
+                minKarten = 1;
+            else
+                minKarten = 2;
+
+            if (hand.size() >= minKarten) {
+                MainWindow.getInstance().outputLogln("Postillion benutzt!");
+                currentGame.setUsedOfficial(true);
+                currentGame.setUsingOfficial(true);
+
+                currentGame.setPlaceRouteAllowed(true);
+            } else {
+                MainWindow.getInstance().outputLogln("Mindestens " + minKarten + " Karte(n) auf der Hand nötig!");
+            }
+        }
     }
 
     public void usePostmaster() {
+        if (!currentGame.hasUsedOfficial()) {
+            MainWindow.getInstance().outputLogln("Postmeister benutzt!");
+            currentGame.setUsedOfficial(true);
+            currentGame.setUsingOfficial(true);
 
+            currentGame.setDrawAllowed(true);
+        }
     }
 
     public int getBonus() {
@@ -93,7 +131,6 @@ public class Spieler {
 
         MainWindow.getInstance().outputLogln(stadt + " zur Route hinzugefügt.");
         refreshView();
-
     }
 
     public void drawCardFromAuslage(int index) {
@@ -105,5 +142,19 @@ public class Spieler {
 
     public void refreshView() {
         MainWindow.getInstance().loadPlayerView(this);
+    }
+
+    public void deleteRoute() {
+        for (Stadt karte : route) {
+            Game.getInstance().addCard(karte);
+        }
+        route.clear();
+        MainWindow.getInstance().outputLogln("Route auf den Ablagestapel gelegt.");
+        refreshView();
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + getName() + "\nPunkte: " + getPoints() + "\n";
     }
 }

@@ -1,5 +1,8 @@
 package oot.fantastic4.tut;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by kaeltis on 13.12.13.
  */
@@ -28,6 +31,7 @@ public enum Stadt {
     LODZ(Land.POLEN);
 
     private Land land;
+    private List<Spieler> houses = new LinkedList<Spieler>();
 
     Stadt(Land land) {
         this.land = land;
@@ -35,5 +39,13 @@ public enum Stadt {
 
     public Land getLand() {
         return land;
+    }
+
+    public void addHouse(Spieler spieler) {
+        this.houses.add(spieler);
+    }
+
+    public boolean hasHouse(Spieler spieler) {
+        return this.houses.contains(spieler);
     }
 }
