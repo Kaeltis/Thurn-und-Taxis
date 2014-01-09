@@ -238,12 +238,6 @@ public class Spieler {
         Stadt karte = currentGame.pollCard();
         hand.add(karte);
 
-
-        //TODO: DEBUG!
-        hand.add(Stadt.INNSBRUCK);
-        hand.add(Stadt.ZÜRICH);
-        hand.add(Stadt.BASEL);
-
         refreshView();
         mainWindow.outputLogln(karte + " gezogen!");
     }
