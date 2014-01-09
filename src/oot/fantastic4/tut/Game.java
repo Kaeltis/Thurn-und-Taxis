@@ -5,10 +5,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
 import javax.swing.*;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Created by Patrick on 15.12.13.
@@ -16,6 +13,7 @@ import java.util.Queue;
 public class Game {
     private static Game instance = new Game();
     private MainWindow mainWindow;
+    private Bonus bonus = new Bonus();
 
     private List<Spieler> mitspieler = new LinkedList<Spieler>();
     private Queue<Stadt> kartenStapel;
@@ -33,22 +31,16 @@ public class Game {
     private boolean drawAllowed = false;
     private boolean placeRouteAllowed = false;
 
-    private int bonusEnde;
-    private int bonus5er;
-    private int bonus6er;
-    private int bonus7er;
-    private int bonusAlleLänder;
-    private int bonusBaden;
-    private int bonusSchweizTyrol;
-    private int bonusWürttembergHohenzollern;
-    private int bonusBöhmenSalzburg;
-    private int bonusBaiern;
 
     private Game() {
         mainWindow = MainWindow.getInstance();
         mapGraph = createMapGraph();
         kartenStapel = createStapel();
+
         shuffleStapel();
+    }
+
+    private void setUpBonus() {
     }
 
     private UndirectedGraph<Stadt, DefaultEdge> createMapGraph() {

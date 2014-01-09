@@ -12,7 +12,7 @@ public class Spieler {
     private String name;
     private Game currentGame;
     private MainWindow mainWindow;
-    private Bonus bonus = new Bonus();
+    private int bonus = 0;
     private int haeuser = 20;
     private List<Stadt> placedHouses = new LinkedList<Stadt>();
     private List<Stadt> hand = new LinkedList<Stadt>();
@@ -63,6 +63,8 @@ public class Spieler {
 
             }
 
+            collectBonus();
+
             deleteRoute();
             mainWindow.outputLogln("Route abgeschlossen!");
 
@@ -74,6 +76,10 @@ public class Spieler {
 
             refreshView();
         }
+    }
+
+    private void collectBonus() {
+
     }
 
     private Land[] getRouteLaender() {
@@ -168,7 +174,7 @@ public class Spieler {
     }
 
     public int getBonus() {
-        return bonus.getValue();
+        return bonus;
     }
 
     public String getName() {
