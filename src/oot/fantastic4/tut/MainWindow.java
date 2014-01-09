@@ -20,7 +20,7 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- * Created by kaeltis on 13.12.13.
+ * Created by Patrick on 13.12.13.
  */
 public class MainWindow {
     private static MainWindow instance = new MainWindow();
@@ -337,4 +337,5 @@ public class MainWindow {
     public JPanel getMainPanel() {
         return mainPanel;
     }
+
 }

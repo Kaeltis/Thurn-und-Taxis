@@ -43,6 +43,7 @@ public class Game {
     }
 
     private void setUpBonus() {
+
     }
 
     private UndirectedGraph<Stadt, DefaultEdge> createMapGraph() {
