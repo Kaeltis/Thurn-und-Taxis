@@ -26,15 +26,10 @@ public enum Stadt {
     REGENSBURG(Land.BAIERN),
     WÜRZBURG(Land.BAIERN),
     LODZ(Land.POLEN);
-
     private Land land;
 
     Stadt(Land land) {
         this.land = land;
-    }
-
-    public Land getLand() {
-        return land;
     }
 
     public static int countStaedteOfLand(Land land) {
@@ -44,6 +39,10 @@ public enum Stadt {
                 count++;
         }
         return count;
+    }
+
+    public Land getLand() {
+        return land;
     }
 
 }

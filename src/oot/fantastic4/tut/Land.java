@@ -15,7 +15,6 @@ public enum Land {
     SALZBURG(new Color(0xFF4F22)),
     POLEN(new Color(0x6D6D6D)),
     BAIERN(new Color(0x836235));
-
     private Color farbe;
 
     Land(Color farbe) {

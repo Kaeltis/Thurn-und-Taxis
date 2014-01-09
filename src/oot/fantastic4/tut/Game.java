@@ -5,7 +5,10 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * Created by Patrick on 15.12.13.
@@ -13,20 +16,16 @@ import java.util.*;
 public class Game {
     private static Game instance = new Game();
     private MainWindow mainWindow;
-
     private List<Spieler> mitspieler = new LinkedList<Spieler>();
     private Queue<Stadt> kartenStapel;
     private List<Stadt> auslageKarten = new LinkedList<Stadt>();
     private UndirectedGraph<Stadt, DefaultEdge> mapGraph;
-
     private boolean gameRunning = true;
     private boolean lastRound = false;
-
     private int currentPlayer = 0;
     private boolean usedOfficial = false;
     private boolean usingOfficial = false;
     private boolean lastStep = false;
-
     private boolean drawAllowed = false;
     private boolean placeRouteAllowed = false;
 
@@ -37,6 +36,10 @@ public class Game {
         kartenStapel = createStapel();
 
         shuffleStapel();
+    }
+
+    public static Game getInstance() {
+        return instance;
     }
 
     private void setUpBonus() {
@@ -134,10 +137,6 @@ public class Game {
         Collections.shuffle((LinkedList) kartenStapel);
     }
 
-    public static Game getInstance() {
-        return instance;
-    }
-
     public void addPlayer(Spieler spieler) {
         mitspieler.add(spieler);
     }
@@ -186,10 +185,6 @@ public class Game {
     public void endGame() {
         mainWindow.showMessage("Spiel beendet! Punkte: " + mitspieler, "Ende!", JOptionPane.INFORMATION_MESSAGE);
         System.exit(0);
-    }
-
-    public void giveBonus(Spieler spieler) {
-
     }
 
     public void swapOpenCards() {
@@ -275,11 +270,19 @@ public class Game {
         return karte;
     }
 
+    public boolean isDrawAllowed() {
+        return drawAllowed;
+    }
+
     public void setDrawAllowed(boolean status) {
         drawAllowed = status;
         if (status) {
             mainWindow.outputLogln("Bitte Karte vom Stapel oder der Auslage ziehen.");
         }
+    }
+
+    public boolean isPlaceRouteAllowed() {
+        return placeRouteAllowed;
     }
 
     public void setPlaceRouteAllowed(boolean status) {
@@ -288,14 +291,6 @@ public class Game {
         if (status) {
             mainWindow.outputLogln("Bitte Karte zur Route legen.");
         }
-    }
-
-    public boolean isDrawAllowed() {
-        return drawAllowed;
-    }
-
-    public boolean isPlaceRouteAllowed() {
-        return placeRouteAllowed;
     }
 
     public void continueAfterDraw() {

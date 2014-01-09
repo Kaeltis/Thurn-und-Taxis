@@ -18,7 +18,6 @@ public enum Bonus {
     BONUS_WUERTTEMBERG_HOHENZOLLERN(3, 2, 1),
     BONUS_BOEHMEN_SALZBURG(4, 3, 2),
     BONUS_BAIERN(5, 4, 3, 2);
-
     private List<Integer> chips;
 
     Bonus(Integer... werte) {
