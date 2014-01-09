@@ -297,7 +297,7 @@ public class MainWindow {
 
         statsTableModel.addRow(new Object[]{"Aktueller Spieler", spieler.getName()});
         statsTableModel.addRow(new Object[]{"Übrige Häuser", spieler.getHaeuser()});
-        statsTableModel.addRow(new Object[]{"Test", spieler.getBonus()});
+        statsTableModel.addRow(new Object[]{"Bonus", spieler.getBonus()});
         statsTableModel.addRow(new Object[]{"Punkte", spieler.getPoints()});
         statsTableModel.addRow(new Object[]{"Gesetzte Häuser", spieler.getPlacedHouses()});
     }

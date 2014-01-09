@@ -83,7 +83,7 @@ public class Spieler {
     private void collectBonus() {
         // Spieler beendet Spiel
         if (haeuser <= 0)
-            bonus += Bonus.BONUS_ALLE_LAENDER.getOne();
+            bonus += Bonus.BONUS_ENDE.getOne();
 
         // Routenlängen Bonus
         if (route.size() >= 7)
@@ -100,15 +100,63 @@ public class Spieler {
                 if (!laender.contains(stadt.getLand()))
                     laender.add(stadt.getLand());
             }
+            //TODO: does this work?
             if (laender.containsAll(EnumSet.allOf(Land.class))) {
                 bonus += Bonus.BONUS_ALLE_LAENDER.getOne();
                 gotBonus.add(Bonus.BONUS_ALLE_LAENDER);
             }
         }
 
+        // BONUS_BADEN
         if (!gotBonus.contains(Bonus.BONUS_BADEN)) {
-
+            if (checkLandBonus(Land.BADEN)) {
+                bonus += Bonus.BONUS_BADEN.getOne();
+                gotBonus.add(Bonus.BONUS_BADEN);
+            }
         }
+
+        // BONUS_SCHWEIZ_TYROL
+        if (!gotBonus.contains(Bonus.BONUS_SCHWEIZ_TYROL)) {
+            if (checkLandBonus(Land.SCHWEIZ) && checkLandBonus(Land.TYROL)) {
+                bonus += Bonus.BONUS_SCHWEIZ_TYROL.getOne();
+                gotBonus.add(Bonus.BONUS_SCHWEIZ_TYROL);
+            }
+        }
+
+        // BONUS_WUERTTEMBERG_HOHENZOLLERN
+        if (!gotBonus.contains(Bonus.BONUS_WUERTTEMBERG_HOHENZOLLERN)) {
+            if (checkLandBonus(Land.WÜRTTEMBERG) && checkLandBonus(Land.HOHENZOLLERN)) {
+                bonus += Bonus.BONUS_WUERTTEMBERG_HOHENZOLLERN.getOne();
+                gotBonus.add(Bonus.BONUS_WUERTTEMBERG_HOHENZOLLERN);
+            }
+        }
+
+        // BONUS_BOEHMEN_SALZBURG
+        if (!gotBonus.contains(Bonus.BONUS_BOEHMEN_SALZBURG)) {
+            if (checkLandBonus(Land.BÖHMEN) && checkLandBonus(Land.SALZBURG)) {
+                bonus += Bonus.BONUS_BOEHMEN_SALZBURG.getOne();
+                gotBonus.add(Bonus.BONUS_BOEHMEN_SALZBURG);
+            }
+        }
+
+        // BONUS_BAIERN
+        if (!gotBonus.contains(Bonus.BONUS_BAIERN)) {
+            if (checkLandBonus(Land.BAIERN)) {
+                bonus += Bonus.BONUS_BAIERN.getOne();
+                gotBonus.add(Bonus.BONUS_BAIERN);
+            }
+        }
+    }
+
+    private boolean checkLandBonus(Land land) {
+        List<Stadt> staedte = new ArrayList<Stadt>();
+        for (Stadt stadt : placedHouses) {
+            if (stadt.getLand() == land && !staedte.contains(stadt)) {
+                staedte.add(stadt);
+            }
+        }
+
+        return Stadt.countStaedteOfLand(land) == staedte.size();
     }
 
     private Land[] getRouteLaender() {
