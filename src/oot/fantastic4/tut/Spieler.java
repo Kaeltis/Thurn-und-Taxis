@@ -81,17 +81,37 @@ public class Spieler {
     }
 
     private void collectBonus() {
+        int punkte;
+
         // Spieler beendet Spiel
-        if (haeuser <= 0)
-            bonus += Bonus.BONUS_ENDE.getOne();
+        if (haeuser <= 0) {
+            punkte = Bonus.BONUS_ENDE.getOne();
+            if (punkte > 0) {
+                bonus += punkte;
+                mainWindow.outputLogln("Bonus als erster Spieler ohne übrige Häuser erhalten: " + punkte);
+            }
+        }
 
         // Routenlängen Bonus
-        if (route.size() >= 7)
-            bonus += Bonus.BONUS_ROUTE_7.getOne();
-        else if (route.size() >= 6)
-            bonus += Bonus.BONUS_ROUTE_6.getOne();
-        else if (route.size() >= 5)
-            bonus += Bonus.BONUS_ROUTE_5.getOne();
+        if (route.size() >= 7) {
+            punkte = Bonus.BONUS_ROUTE_7.getOne();
+            if (punkte > 0) {
+                bonus += punkte;
+                mainWindow.outputLogln("Bonus für Route länger als 7 erhalten: " + punkte);
+            }
+        } else if (route.size() >= 6) {
+            punkte = Bonus.BONUS_ROUTE_6.getOne();
+            if (punkte > 0) {
+                bonus += punkte;
+                mainWindow.outputLogln("Bonus für Route der Länge 6 erhalten: " + punkte);
+            }
+        } else if (route.size() >= 5) {
+            punkte = Bonus.BONUS_ROUTE_5.getOne();
+            if (punkte > 0) {
+                bonus += punkte;
+                mainWindow.outputLogln("Bonus für Route der Länge 5 erhalten: " + punkte);
+            }
+        }
 
         // Alle Länder mit Haus
         if (!gotBonus.contains(Bonus.BONUS_ALLE_LAENDER)) {
@@ -100,9 +120,13 @@ public class Spieler {
                 if (!laender.contains(stadt.getLand()))
                     laender.add(stadt.getLand());
             }
-            //TODO: does this work?
+
             if (laender.containsAll(EnumSet.allOf(Land.class))) {
-                bonus += Bonus.BONUS_ALLE_LAENDER.getOne();
+                punkte = Bonus.BONUS_ALLE_LAENDER.getOne();
+                if (punkte > 0) {
+                    bonus += punkte;
+                    mainWindow.outputLogln("Bonus für ein Haus in allen Ländern erhalten: " + punkte);
+                }
                 gotBonus.add(Bonus.BONUS_ALLE_LAENDER);
             }
         }
@@ -110,7 +134,11 @@ public class Spieler {
         // BONUS_BADEN
         if (!gotBonus.contains(Bonus.BONUS_BADEN)) {
             if (checkLandBonus(Land.BADEN)) {
-                bonus += Bonus.BONUS_BADEN.getOne();
+                punkte = Bonus.BONUS_BADEN.getOne();
+                if (punkte > 0) {
+                    bonus += punkte;
+                    mainWindow.outputLogln("Bonus für ein Haus in jeder Stadt von Baden erhalten: " + punkte);
+                }
                 gotBonus.add(Bonus.BONUS_BADEN);
             }
         }
@@ -118,7 +146,11 @@ public class Spieler {
         // BONUS_SCHWEIZ_TYROL
         if (!gotBonus.contains(Bonus.BONUS_SCHWEIZ_TYROL)) {
             if (checkLandBonus(Land.SCHWEIZ) && checkLandBonus(Land.TYROL)) {
-                bonus += Bonus.BONUS_SCHWEIZ_TYROL.getOne();
+                punkte = Bonus.BONUS_SCHWEIZ_TYROL.getOne();
+                if (punkte > 0) {
+                    bonus += punkte;
+                    mainWindow.outputLogln("Bonus für ein Haus in jeder Stadt der Schweiz und Tyrol erhalten: " + punkte);
+                }
                 gotBonus.add(Bonus.BONUS_SCHWEIZ_TYROL);
             }
         }
@@ -126,7 +158,11 @@ public class Spieler {
         // BONUS_WUERTTEMBERG_HOHENZOLLERN
         if (!gotBonus.contains(Bonus.BONUS_WUERTTEMBERG_HOHENZOLLERN)) {
             if (checkLandBonus(Land.WÜRTTEMBERG) && checkLandBonus(Land.HOHENZOLLERN)) {
-                bonus += Bonus.BONUS_WUERTTEMBERG_HOHENZOLLERN.getOne();
+                punkte = Bonus.BONUS_WUERTTEMBERG_HOHENZOLLERN.getOne();
+                if (punkte > 0) {
+                    bonus += punkte;
+                    mainWindow.outputLogln("Bonus für ein Haus in jeder Stadt von Württemberg und Hohenzollern erhalten: " + punkte);
+                }
                 gotBonus.add(Bonus.BONUS_WUERTTEMBERG_HOHENZOLLERN);
             }
         }
@@ -134,7 +170,11 @@ public class Spieler {
         // BONUS_BOEHMEN_SALZBURG
         if (!gotBonus.contains(Bonus.BONUS_BOEHMEN_SALZBURG)) {
             if (checkLandBonus(Land.BÖHMEN) && checkLandBonus(Land.SALZBURG)) {
-                bonus += Bonus.BONUS_BOEHMEN_SALZBURG.getOne();
+                punkte = Bonus.BONUS_BOEHMEN_SALZBURG.getOne();
+                if (punkte > 0) {
+                    bonus += punkte;
+                    mainWindow.outputLogln("Bonus für ein Haus in jeder Stadt von Böhmen und Salzburg erhalten: " + punkte);
+                }
                 gotBonus.add(Bonus.BONUS_BOEHMEN_SALZBURG);
             }
         }
@@ -142,7 +182,11 @@ public class Spieler {
         // BONUS_BAIERN
         if (!gotBonus.contains(Bonus.BONUS_BAIERN)) {
             if (checkLandBonus(Land.BAIERN)) {
-                bonus += Bonus.BONUS_BAIERN.getOne();
+                punkte = Bonus.BONUS_BAIERN.getOne();
+                if (punkte > 0) {
+                    bonus += punkte;
+                    mainWindow.outputLogln("Bonus für ein Haus in jeder Stadt von Baiern erhalten: " + punkte);
+                }
                 gotBonus.add(Bonus.BONUS_BAIERN);
             }
         }
@@ -193,6 +237,12 @@ public class Spieler {
     public void drawCardFromStack() {
         Stadt karte = currentGame.pollCard();
         hand.add(karte);
+
+
+        //TODO: DEBUG!
+        hand.add(Stadt.INNSBRUCK);
+        hand.add(Stadt.ZÜRICH);
+        hand.add(Stadt.BASEL);
 
         refreshView();
         mainWindow.outputLogln(karte + " gezogen!");
