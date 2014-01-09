@@ -13,7 +13,6 @@ import java.util.*;
 public class Game {
     private static Game instance = new Game();
     private MainWindow mainWindow;
-    private Bonus bonus = new Bonus();
 
     private List<Spieler> mitspieler = new LinkedList<Spieler>();
     private Queue<Stadt> kartenStapel;

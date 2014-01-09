@@ -2,6 +2,7 @@ package oot.fantastic4.tut;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class Spieler {
     private List<Stadt> placedHouses = new LinkedList<Stadt>();
     private List<Stadt> hand = new LinkedList<Stadt>();
     private List<Stadt> route = new LinkedList<Stadt>();
+    private List<Bonus> gotBonus = new LinkedList<Bonus>();
 
     public Spieler(String name) {
         this.name = name;
@@ -79,7 +81,34 @@ public class Spieler {
     }
 
     private void collectBonus() {
+        // Spieler beendet Spiel
+        if (haeuser <= 0)
+            bonus += Bonus.BONUS_ALLE_LAENDER.getOne();
 
+        // Routenlängen Bonus
+        if (route.size() >= 7)
+            bonus += Bonus.BONUS_ROUTE_7.getOne();
+        else if (route.size() >= 6)
+            bonus += Bonus.BONUS_ROUTE_6.getOne();
+        else if (route.size() >= 5)
+            bonus += Bonus.BONUS_ROUTE_5.getOne();
+
+        // Alle Länder mit Haus
+        if (!gotBonus.contains(Bonus.BONUS_ALLE_LAENDER)) {
+            List<Land> laender = new ArrayList<Land>();
+            for (Stadt stadt : placedHouses) {
+                if (!laender.contains(stadt.getLand()))
+                    laender.add(stadt.getLand());
+            }
+            if (laender.containsAll(EnumSet.allOf(Land.class))) {
+                bonus += Bonus.BONUS_ALLE_LAENDER.getOne();
+                gotBonus.add(Bonus.BONUS_ALLE_LAENDER);
+            }
+        }
+
+        if (!gotBonus.contains(Bonus.BONUS_BADEN)) {
+
+        }
     }
 
     private Land[] getRouteLaender() {
@@ -113,20 +142,9 @@ public class Spieler {
         }
     }
 
-    public void removeCards() {
-
-    }
-
     public void drawCardFromStack() {
-        //Stadt karte = currentGame.pollCard();
-        Stadt karte = Stadt.MANNHEIM;
+        Stadt karte = currentGame.pollCard();
         hand.add(karte);
-
-        Stadt karte2 = Stadt.STUTTGART;
-        hand.add(karte2);
-
-        Stadt karte3 = Stadt.ULM;
-        hand.add(karte3);
 
         refreshView();
         mainWindow.outputLogln(karte + " gezogen!");
