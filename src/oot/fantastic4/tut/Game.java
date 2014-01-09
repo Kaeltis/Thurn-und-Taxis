@@ -42,10 +42,6 @@ public class Game {
         return instance;
     }
 
-    private void setUpBonus() {
-
-    }
-
     private UndirectedGraph<Stadt, DefaultEdge> createMapGraph() {
         UndirectedGraph<Stadt, DefaultEdge> graph =
                 new SimpleGraph<Stadt, DefaultEdge>(DefaultEdge.class);
@@ -142,6 +138,7 @@ public class Game {
         mitspieler.add(spieler);
     }
 
+    // Not used
     public Spieler selectWinner() {
         Spieler winner = mitspieler.get(0);
 
