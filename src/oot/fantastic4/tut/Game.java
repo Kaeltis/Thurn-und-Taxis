@@ -168,7 +168,7 @@ public class Game {
         mainWindow.loadAuslage(auslageKarten);
     }
 
-    public void loadCurrentPlayer() {
+    private void loadCurrentPlayer() {
         if (gameRunning) {
             beginTurn(getCurrentPlayer());
         } else {
@@ -176,13 +176,13 @@ public class Game {
         }
     }
 
-    public void beginTurn(Spieler spieler) {
+    private void beginTurn(Spieler spieler) {
         mainWindow.showMessage(spieler.getName() + " ist an der Reihe.", spieler.getName(), JOptionPane.INFORMATION_MESSAGE);
         mainWindow.loadPlayerView(spieler);
         setDrawAllowed(true);
     }
 
-    public void endGame() {
+    private void endGame() {
         mainWindow.showMessage("Spiel beendet! Punkte: " + mitspieler, "Ende!", JOptionPane.INFORMATION_MESSAGE);
         System.exit(0);
     }
@@ -217,7 +217,7 @@ public class Game {
         }
     }
 
-    public void checkRoute(Stadt stadt) {
+    private void checkRoute(Stadt stadt) {
         Spieler player = getCurrentPlayer();
         List<Stadt> route = player.getRoute();
 
@@ -362,7 +362,7 @@ public class Game {
         return lastStep;
     }
 
-    public void setLastStep(boolean lastStep) {
+    private void setLastStep(boolean lastStep) {
         this.lastStep = lastStep;
     }
 }

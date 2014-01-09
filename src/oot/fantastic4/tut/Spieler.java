@@ -227,7 +227,7 @@ public class Spieler {
         return staedte.toArray(new Stadt[staedte.size()]);
     }
 
-    public void placeHouse(Stadt stadt) {
+    private void placeHouse(Stadt stadt) {
         if (!placedHouses.contains(stadt)) {
             placedHouses.add(stadt);
             haeuser--;
@@ -327,7 +327,7 @@ public class Spieler {
         refreshView();
     }
 
-    public void refreshView() {
+    private void refreshView() {
         mainWindow.loadPlayerView(this);
     }
 
