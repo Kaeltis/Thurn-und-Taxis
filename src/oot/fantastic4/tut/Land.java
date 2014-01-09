@@ -25,4 +25,8 @@ public enum Land {
     public Color getFarbe() {
         return farbe;
     }
+
+    public boolean isStadtInLand(Stadt stadt) {
+        return stadt.getLand() == this;
+    }
 }

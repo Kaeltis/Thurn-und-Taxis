@@ -1,5 +1,7 @@
 package oot.fantastic4.tut;
 
+import javax.swing.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import java.util.List;
 public class Spieler {
     private String name;
     private Game currentGame;
+    private MainWindow mainWindow;
     private Bonus bonus = new Bonus();
     private int haeuser = 20;
     private List<Stadt> placedHouses = new LinkedList<Stadt>();
@@ -18,26 +21,83 @@ public class Spieler {
     public Spieler(String name) {
         this.name = name;
         this.currentGame = Game.getInstance();
+        this.mainWindow = MainWindow.getInstance();
     }
 
     public void finishRoute() {
         if (route.size() >= 3) {
 
-            for (Stadt stadt : route) {
-                placeHouse(stadt);
+            Object[] options = {"Eine Stadt pro Land", "Ein Land alle Städte"};
+            int selection = mainWindow.askMessage(options, "Häuser wie setzen?", "Frage");
+
+            if (selection == JOptionPane.OK_OPTION) { // Eine Stadt pro Land
+                Land[] laender = getRouteLaender();
+                Stadt[] choices;
+
+                for (Land land : laender) {
+                    choices = getRouteStaedteOfLandWithNoPlayerHouse(land);
+
+                    if (choices.length > 0) {
+                        Stadt auswahl = (Stadt) JOptionPane.showInputDialog(mainWindow.getMainPanel(), "Welches Stadt in " + land + "?",
+                                "Frage", JOptionPane.QUESTION_MESSAGE, null,
+                                choices,
+                                choices[0]);
+
+                        placeHouse(auswahl);
+                    }
+                }
+
+            } else { // Ein Land alle Städte
+                Land[] choices = getRouteLaender();
+
+                Land auswahl = (Land) JOptionPane.showInputDialog(mainWindow.getMainPanel(), "Welches Land?",
+                        "Frage", JOptionPane.QUESTION_MESSAGE, null,
+                        choices,
+                        choices[0]);
+
+                for (Stadt stadt : route) {
+                    if (stadt.getLand() == auswahl) {
+                        placeHouse(stadt);
+                    }
+                }
+
             }
 
             deleteRoute();
-            MainWindow.getInstance().outputLogln("Route abgeschlossen!");
+            mainWindow.outputLogln("Route abgeschlossen!");
 
             if (haeuser <= 0) {
                 currentGame.setLastRound(true);
             }
 
-            MainWindow.getInstance().setFinishRouteButtonStatus(false);
+            mainWindow.setFinishRouteButtonStatus(false);
 
             refreshView();
         }
+    }
+
+    private Land[] getRouteLaender() {
+        List<Land> laender = new ArrayList<Land>();
+
+        for (Stadt stadt : route) {
+            if (!laender.contains(stadt.getLand())) {
+                laender.add(stadt.getLand());
+            }
+        }
+
+        return laender.toArray(new Land[laender.size()]);
+    }
+
+    private Stadt[] getRouteStaedteOfLandWithNoPlayerHouse(Land land) {
+        List<Stadt> staedte = new ArrayList<Stadt>();
+
+        for (Stadt stadt : route) {
+            if (land.isStadtInLand(stadt) && !staedte.contains(stadt) && !placedHouses.contains(stadt)) {
+                staedte.add(stadt);
+            }
+        }
+
+        return staedte.toArray(new Stadt[staedte.size()]);
     }
 
     public void placeHouse(Stadt stadt) {
@@ -52,15 +112,23 @@ public class Spieler {
     }
 
     public void drawCardFromStack() {
-        Stadt karte = currentGame.pollCard();
+        //Stadt karte = currentGame.pollCard();
+        Stadt karte = Stadt.MANNHEIM;
         hand.add(karte);
+
+        Stadt karte2 = Stadt.STUTTGART;
+        hand.add(karte2);
+
+        Stadt karte3 = Stadt.ULM;
+        hand.add(karte3);
+
         refreshView();
-        MainWindow.getInstance().outputLogln(karte + " gezogen!");
+        mainWindow.outputLogln(karte + " gezogen!");
     }
 
     public void useBailiff() {
         if (!currentGame.hasUsedOfficial()) {
-            MainWindow.getInstance().outputLogln("Amtmann benutzt!");
+            mainWindow.outputLogln("Amtmann benutzt!");
             currentGame.setUsedOfficial(true);
             currentGame.setUsingOfficial(true);
 
@@ -78,20 +146,20 @@ public class Spieler {
                 minKarten = 2;
 
             if (hand.size() >= minKarten) {
-                MainWindow.getInstance().outputLogln("Postillion benutzt!");
+                mainWindow.outputLogln("Postillion benutzt!");
                 currentGame.setUsedOfficial(true);
                 currentGame.setUsingOfficial(true);
 
                 currentGame.setPlaceRouteAllowed(true);
             } else {
-                MainWindow.getInstance().outputLogln("Mindestens " + minKarten + " Karte(n) auf der Hand nötig!");
+                mainWindow.outputLogln("Mindestens " + minKarten + " Karte(n) auf der Hand nötig!");
             }
         }
     }
 
     public void usePostmaster() {
         if (!currentGame.hasUsedOfficial()) {
-            MainWindow.getInstance().outputLogln("Postmeister benutzt!");
+            mainWindow.outputLogln("Postmeister benutzt!");
             currentGame.setUsedOfficial(true);
             currentGame.setUsingOfficial(true);
 
@@ -132,19 +200,19 @@ public class Spieler {
             route.add(stadt);
         }
 
-        MainWindow.getInstance().outputLogln(stadt + " zur Route hinzugefügt.");
+        mainWindow.outputLogln(stadt + " zur Route hinzugefügt.");
         refreshView();
     }
 
     public void drawCardFromAuslage(int index) {
         Stadt karte = currentGame.popAuslageCard(index);
         hand.add(karte);
-        MainWindow.getInstance().outputLogln(karte + " gezogen!");
+        mainWindow.outputLogln(karte + " gezogen!");
         refreshView();
     }
 
     public void refreshView() {
-        MainWindow.getInstance().loadPlayerView(this);
+        mainWindow.loadPlayerView(this);
     }
 
     public void deleteRoute() {
@@ -152,7 +220,7 @@ public class Spieler {
             Game.getInstance().addCard(karte);
         }
         route.clear();
-        MainWindow.getInstance().outputLogln("Route auf den Ablagestapel gelegt.");
+        mainWindow.outputLogln("Route auf den Ablagestapel gelegt.");
         refreshView();
     }
 

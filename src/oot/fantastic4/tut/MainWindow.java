@@ -27,7 +27,6 @@ public class MainWindow {
     private Game mainGame;
 
     private JTextArea statusTextArea;
-    private JButton ablagestapelButton;
     private JButton kartenstapelButton;
     private JPanel mapPanel;
     private JPanel mainPanel;
@@ -333,5 +332,9 @@ public class MainWindow {
 
     public void setDeleteCurrentRouteButtonStatus(boolean status) {
         deleteCurrentRouteButton.setEnabled(status);
+    }
+
+    public JPanel getMainPanel() {
+        return mainPanel;
     }
 }
